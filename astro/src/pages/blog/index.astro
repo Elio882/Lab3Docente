@@ -1,0 +1,47 @@
+---
+import Layout from "@layouts/Layout.astro";
+import  {marked}  from 'marked';
+import type { Noticia } from "../../types/movies.dto";
+const endpoint = import.meta.env.STRAPI_URL;
+const response = await fetch(endpoint);
+const data = await response.json();
+const blog: Noticia[] = data.data as Noticia[];
+
+console.log(data);
+---
+<Layout title="">
+    <h1>
+        hola mundo
+    </h1>
+    <div class="row">
+        {
+            blog.map(({attributes}:Noticia) => (
+              <div class="col-lg-4">
+                <div class="card mt-4" style="width: 18 rem;">
+                  
+                  <div class="card-body">
+                    <h5 class="card-title">{attributes.Title}</h5>
+
+                    <p class="card-text">
+                      {attributes.Date}
+                    </p>
+                    <div class="content-text" set:html={marked.parse(attributes.content)}>
+                    
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+    </div>
+</Layout>
+
+<style>
+  img{
+    max-width: 100%;
+  }
+  .content-text > p > img {
+    max-width: 100% ;
+    height: auto; 
+}
+</style>
